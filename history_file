@@ -1,0 +1,38 @@
+ 2564  nano safe_ionos-cloud.env 
+ 2565  kubecl get pods --all-namespaces
+ 2566  kubectl get pods --all-namespaces
+ 2567  ls
+ 2568  echo  "Your Ingress IP is: $(kubectl -n kube-system get svc nginx-ingress-controller -ojsonpath='{.status.loadBalancer.ingress[0].ip}')"
+ 2569  ls
+ 2570  cp letsencrypt_certmanager.yaml github/
+ 2571  nano mega_cheatsheet
+ 2572  ls
+ 2573  cat safe_ionos-cloud.env 
+ 2574  kubectl create namespace cert-manager
+ 2575  kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.16.0/cert-manager.crds.yaml;
+ 2576  helm --namespace cert-manager upgrade --install cert-manager jetstack/cert-manager --version v0.16.0 --set ingressShim.defaultIssuerName=letsencrypt-prod --set ingressShim.defaultIssuerKind=ClusterIssuer --set ingressShim.defaultIssuerGroup=cert-manager.io && kubectl -n cert-manager wait --for=condition=Available deployment/cert-manager --timeout=300s;
+ 2577  cd $GOPATH/src/sigs.k8s.io
+ 2578  ls
+ 2579  cd application/
+ 2580  make deploy
+ 2581  kubectl -n application-system wait --for=condition=Available deployment/kube-app-manager-controller --timeout=300s;
+ 2582  cd ~/workspace/devopscon/
+ 2583  ls
+ 2584  cat letsencrypt_certmanager.yaml 
+ 2585  nano letsencrypt_certmanager.yaml 
+ 2586  kubectl apply -f letsencrypt_certmanager.yaml 
+ 2587  kustomize build github.com/presslabs/stack/deploy/manifests | kubectl apply -f -
+ 2588  ls
+ 2589  nano stack-values.yaml 
+ 2590  kubectl create namespace presslabs-system
+ 2591  kubectl get pods --all-namespaces
+ 2592  helm --namespace=presslabs-system upgrade --install stack presslabs/stack --values ${PWD}/stack-values.yaml && kubectl -n presslabs-system wait --for=condition=Available deployment/stack-wordpress-operator --timeout=300s;
+ 2593  kubectl create namespace wp01
+ 2594  helm -n wp01 upgrade --install wp01 presslabs/wordpress-site --set site.domains[0]=wp01.w1nd0rf.com --set ingressClass=nginx --set tls.issuerName=letsencrypt-prod --set tls.issuerClass=nginx
+ 2595  watch -n1 kubectl get pods -n wp01
+ 2596  kubectl exec -it wp01-6b865d5d5d-w666x bash
+ 2597  kubectl -n wp01 exec -it wp01-6b865d5d5d-w666x bash
+ 2598  kubectl get pods --all-namespaces
+ 2599  ls
+ 2600  cat letsencrypt_certmanager.yaml 
+ 2601  history > history_file
